@@ -4,18 +4,14 @@ import { Modal, Overlay } from './Modal.styled'
 import { useEffect } from 'react';
 
 export function ModalWindow ({closeModal, onModalClick, data}) {
-
-    console.log(data);
  
     // eslint-disable-next-line react-hooks/exhaustive-deps
     function handleKeyDown (e) 
          {
             if(e.code === 'Escape'){
              closeModal()
-
             }
-        
-    }
+   }
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown)

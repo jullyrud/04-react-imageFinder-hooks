@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Searchbar } from "./Searchbar/Searchbar";
 import { AppWrap, BtnLoadMore } from './App.styled'
 import { ImageGallery } from "./ImageGallery/ImageGallery";
@@ -17,7 +17,8 @@ export function App() {
   const [error, setError] = useState(false);
   const [isModal, setIsModal] = useState(false);
   const [modalData, setModalData] = useState('');
-
+  
+    
   function onHandleSubmit(evt) {
     
     const query = evt.target.name.value.toLowerCase()
@@ -35,6 +36,7 @@ export function App() {
     setErorOfSerch(false)
 
     try {
+     
       getGallery(query, page)
         .then(({ data }) => {
           if (data.hits.length === 0) {
@@ -45,25 +47,28 @@ export function App() {
     } catch (error) {
       setError(true)
     }
-    setPage(st => st + 1)
-  
-    evt.target.reset()
-    console.log();
+     setPage(st => st + 1)
+
+     evt.target.reset()
+    
   }
   function onLoadMoreBtnClick() {
     setIsLoad(true)
 
     setTimeout(() => {
+       
       try {
         getGallery(q, page)
-          .then(({ data }) => setGallery(st => [...st, data.hits]))
+          
+          .then(({ data }) => setGallery(st => [...st, ...data.hits]))
           .finally(setIsLoad(false))
       } catch (error) {
         setError(true)
       }
     }, 500);
-
-    setPage(st => st + 1)
+     
+      setPage(st => st + 1)
+      
   } 
   function onSelect(data) {
 
