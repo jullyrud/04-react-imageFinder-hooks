@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Searchbar } from "./Searchbar/Searchbar";
 import { AppWrap, BtnLoadMore } from './App.styled'
 import { ImageGallery } from "./ImageGallery/ImageGallery";
@@ -6,6 +6,7 @@ import { getGallery } from '../api/gallery'
 import { Loader } from './Loader/Loader' 
 import { ErorMessage } from './ErorMessage/ErorMessage'
 import { ModalWindow } from './Modal/Modal'
+
 
 export function App() {
   
@@ -18,12 +19,23 @@ export function App() {
   const [isModal, setIsModal] = useState(false);
   const [modalData, setModalData] = useState('');
   
-    
+  useEffect(() => {
+    if (!q) {
+      return
+    }
+    try {
+        getGallery(q, page)
+          
+          .then(({ data }) => setGallery(st => [...st, ...data.hits]))
+          .finally(setIsLoad(false))
+      } catch (error) {
+        setError(true)
+      }
+  }, [page, q])
+ 
   function onHandleSubmit(evt) {
-    
-    const query = evt.target.name.value.toLowerCase()
-  
-    evt.preventDefault()
+  const query = evt.target.name.value.toLowerCase()
+  evt.preventDefault()
     
     if (query.trim() === '') {
       alert('Введите что-нибудь')
@@ -34,40 +46,14 @@ export function App() {
     setIsLoad(true);
     setGallery([]);
     setErorOfSerch(false)
-
-    try {
-     
-      getGallery(query, page)
-        .then(({ data }) => {
-          if (data.hits.length === 0) {
-            setErorOfSerch(true)
-          } setGallery(data.hits)
-
-        }).finally(setIsLoad(false))
-    } catch (error) {
-      setError(true)
-    }
-     setPage(st => st + 1)
-
-     evt.target.reset()
+    setPage(1)
+    evt.target.reset()
     
   }
   function onLoadMoreBtnClick() {
     setIsLoad(true)
-
-    setTimeout(() => {
-       
-      try {
-        getGallery(q, page)
-          
-          .then(({ data }) => setGallery(st => [...st, ...data.hits]))
-          .finally(setIsLoad(false))
-      } catch (error) {
-        setError(true)
-      }
-    }, 500);
-     
-      setPage(st => st + 1)
+    
+    setPage(st => st + 1)
       
   } 
   function onSelect(data) {
