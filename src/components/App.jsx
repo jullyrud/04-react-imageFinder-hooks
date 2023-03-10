@@ -24,13 +24,19 @@ export function App() {
       return
     }
     try {
-        getGallery(q, page)
-          
-          .then(({ data }) => setGallery(st => [...st, ...data.hits]))
-          .finally(setIsLoad(false))
+      getGallery(q, page)
+        .then(({ data }) => {
+          if (data.hits.length === 0) {
+        setErorOfSerch(true)
+      }
+          setGallery(st => [...st, ...data.hits])
+        })
+        .finally(setIsLoad(false))
+      
       } catch (error) {
         setError(true)
-      }
+    }
+    
   }, [page, q])
  
   function onHandleSubmit(evt) {
